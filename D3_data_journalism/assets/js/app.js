@@ -16,15 +16,15 @@ logData();
 
 
 //set svg area dimensions
-var svgWidth = 960;
-var svgHeight = 660;
+var svgWidth = 900;
+var svgHeight = 900;
 
 //set chart's margins as an object
 var chartMargin = {
-  top: 30,
-  right: 30,
-  bottom: 30,
-  left: 30
+  top: 100,
+  right: 50,
+  bottom: 10,
+  left: 50
 };
 
 //set dimensions for chart area
@@ -35,8 +35,9 @@ var chartHeight = svgHeight - chartMargin.top - chartMargin.bottom;
 var svg = d3
   .select("#scatter")
   .append("svg")
-  .attr("height", svgHeight)
-  .attr("width", svgWidth);
+  .attr("width", svgWidth)
+  .attr("height", svgHeight);
+
 
 //append a group to the SVG area 
 var chartGroup = svg.append("g")
@@ -46,27 +47,27 @@ var chartGroup = svg.append("g")
 d3.csv("data/data.csv").then(data => {
     console.log(data)
 
-    data.forEach(function(rate) {
-        rate.healthcare = +rate.healthcare;
-        rate.poverty = +rate.poverty;
-        rate.smokes = +rate.smokes;
-        rate.age = +rate.age;
-    })
+    data.forEach(function(record) {
+        // rate.healthcare = +rate.healthcare;
+        // rate.poverty = +rate.poverty;
+
+        record.age = +record.age;
+        record.smokes = +record.smokes;
+    });
 
     //add x axis
     var x = d3.scaleLinear()
-        .domain([0, max])
+        .domain(d3.extent(data, d => d.age))
         .range([0, chartWidth]);
     svg.append("g")
-        .attr("transform", `translate(${chartHeight})`)
+        .attr("transform", `translate(0, ${chartHeight})`)
         .call(d3.axisBottom(x));
 
     //add y axis
     var y = d3.scaleLinear()
-        .domain([0, max])
+        .domain([0, 30])
         .range([chartHeight, 0]);
     svg.append("g")
-        .attr("transform", `translate(${chartHeight})`)
         .call(d3.axisLeft(y));
 
     //add dots
@@ -75,16 +76,19 @@ d3.csv("data/data.csv").then(data => {
         .data(data)
         .enter()
         .append("circle")
-        .attr("cx", function (d) { 
-            return x(d.smokes); 
+        .attr("cx", function (d, i) { 
+            return x(d.age); 
         })
         .attr("cy", function (d) { 
-            return y(d.age); 
+            return y(d.smokes); 
         })
-        .attr("r", 1.5)
-        .style("fill", "light blue");
+        .attr("r", 4)
+        .style("fill", "blue");
 
-})
+    }).catch(function(error) {
+        console.log(error);
+    })
+
 
 
 
