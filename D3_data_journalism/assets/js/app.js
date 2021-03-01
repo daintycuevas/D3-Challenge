@@ -10,16 +10,16 @@ function logData() {
 logData();
 
 
-var dataHealth = d3.csv("data/data.csv", (d) => {
-    console.log(d)
-    });
+// var dataHealth = d3.csv("data/data.csv", (d) => {
+//     console.log(d)
+//     });
 
 
-// Define SVG area dimensions
+//set svg area dimensions
 var svgWidth = 960;
 var svgHeight = 660;
 
-// Define the chart's margins as an object
+//set chart's margins as an object
 var chartMargin = {
   top: 30,
   right: 30,
@@ -27,32 +27,63 @@ var chartMargin = {
   left: 30
 };
 
-// Define dimensions of the chart area
+//set dimensions for chart area
 var chartWidth = svgWidth - chartMargin.left - chartMargin.right;
 var chartHeight = svgHeight - chartMargin.top - chartMargin.bottom;
 
-// Select body, append SVG area to it, and set the dimensions
+//append svg to body of the page
 var svg = d3
-  .select("body")
+  .select("#scatter")
   .append("svg")
   .attr("height", svgHeight)
   .attr("width", svgWidth);
 
-// Append a group to the SVG area and shift ('translate') it to the right and down to adhere
-// to the margins set in the "chartMargin" object.
+//append a group to the SVG area 
 var chartGroup = svg.append("g")
   .attr("transform", `translate(${chartMargin.left}, ${chartMargin.top})`);
 
-// Load data from hours-of-tv-watched.csv
-d3.csv("data/data.csv").then(d => {
-    console.log(d)
+//read the data
+d3.csv("data/data.csv").then(data => {
+    console.log(data)
 
-    d.forEach(function(rate) {
+    data.forEach(function(rate) {
         rate.healthcare = +rate.healthcare;
         rate.poverty = +rate.poverty;
         rate.smokes = +rate.smokes;
         rate.age = +rate.age;
-    });
+    })
+
+    //add x axis
+    var x = d3.scaleLinear()
+        .domain([0, max])
+        .range([0, chartWidth]);
+    svg.append("g")
+        .attr("transform", `translate(${chartHeight})`)
+        .call(d3.axisBottom(x));
+
+    //add y axis
+    var y = d3.scaleLinear()
+        .domain([0, max])
+        .range([chartHeight, 0]);
+    svg.append("g")
+        .attr("transform", `translate(${chartHeight})`)
+        .call(d3.axisLeft(y));
+
+    //add dots
+    svg.append("g")
+        .selectAll("dot")
+        .data(data)
+        .enter()
+        .append("circle")
+        .attr("cx", function (d) { 
+            return x(d.smokes); 
+        })
+        .attr("cy", function (d) { 
+            return y(d.age); 
+        })
+        .attr("r", 1.5)
+        .style("fill", "light blue");
+
 })
 
 
