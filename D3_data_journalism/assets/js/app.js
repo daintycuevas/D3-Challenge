@@ -69,15 +69,10 @@ function makeResponsive() {
         var y = d3.scaleLinear()
             .domain([0, d3.max(healthData, d => d.smokes)])
             .range([height, 0]);
-
-        var y2 = d3.scaleLinear()
-            .domain([0, d3.max(healthData, d => d.poverty)])
-            .range([height, 0]);
             
         //create axes
         var bottomAxis = d3.axisBottom(x);
         var leftAxis = d3.axisLeft(y);
-        var rightAxis = d3.axisRight(y2);
 
         //append axes to the chartGroup
         chartGroup.append("g").attr("transform", `translate(0, ${height})`)
@@ -94,7 +89,7 @@ function makeResponsive() {
             .attr("cx", d => x(d.age))
             .attr("cy", d => y(d.smokes))
             .attr("r", 8)
-            .style("fill", "lightblue")
+            .style("fill", "steelblue")
             .attr("opacity", ".5");
         
         //append text in dots
