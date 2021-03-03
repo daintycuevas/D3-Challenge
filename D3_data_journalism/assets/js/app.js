@@ -29,7 +29,7 @@ function makeResponsive() {
     top: 100,
     right: 750,
     bottom: 100,
-    left: 20
+    left: 70
     };
 
     //set dimensions for chart area
@@ -84,9 +84,6 @@ function makeResponsive() {
             .call(bottomAxis);
         chartGroup.append("g")
             .call(leftAxis);
-        chartGroup.append("g").attr("transform", `translate(${width}, 0)`)
-            .classed("red", true)
-            .call(rightAxis);
 
 
         //add dots
@@ -99,13 +96,45 @@ function makeResponsive() {
             .attr("r", 8)
             .style("fill", "lightblue")
             .attr("opacity", ".5");
+        
+        //append text in dots
+            
+        // var gdots =  svg.selectAll("g.dot")
+        //     .data(healthData)
+        //     .enter()
+        //     .append("g");
+
+        // gdots.append("circle")
+        //     .attr("class", "dot")
+        //     .attr("r", function (d) {
+        //         return d.r;
+        //     })
+        //     .attr("cx", function (d) {
+        //         return x(d.x);
+        //     })
+        //     .attr("cy", function (d) {
+        //         return y(d.y);
+        //     })
+        //     .style("fill", function (d) {
+        //         return d.c;
+        //     });
+
+        // gdots.append("text").text(function(d){
+        //         return d.abbr;
+        //     })
+        //     .attr("x", function (d) {
+        //         return x(d.x);
+        //     })
+        //     .attr("y", function (d) {
+        //         return y(d.y);
+        //     });
 
         //add tooltip
         var toolTip = d3.tip()
             .attr("class", "tooltip")
             .offset([80, -60])
             .html(function(d) {
-                return (`${d.smokes}<br>Age: ${d.age}<br>Poverty: ${d.poverty}`);
+                return (`Smokes: ${d.smokes} %<br>Age: ${d.age}<br>In Poverty: ${d.poverty} %`);
             });
         
         chartGroup.call(toolTip);
@@ -114,9 +143,6 @@ function makeResponsive() {
         circlesGroup.on("mouseover", function(d) {
             toolTip.style("display", "block")
                 .show(d, this);
-                // .html(`<strong>${d.smokes}<strong><hr>Age Group:${d.age}`)
-                // .style("left", d3.event.pageX + "px")
-                // .style("top", d3.event.pageY + "px");
         })
 
         //create mouseout
@@ -127,16 +153,16 @@ function makeResponsive() {
         // Create axes labels
         chartGroup.append("text")
             .attr("transform", "rotate(-90)")
-            .attr("y", 0 - chartMargin.left + 40)
+            .attr("y", 0 - chartMargin.left + 20)
             .attr("x", 0 - (height / 2))
             .attr("dy", "1em")
             .attr("class", "axisText")
-            .text("Smoker");
+            .text("Smokes (%)");
 
         chartGroup.append("text")
             .attr("transform", `translate(${width / 2}, ${height + 40})`)
             .attr("class", "axisText")
-            .text("Age");
+            .text("Age (Median)");
 
     }).catch(function(error) {
     console.log(error);
